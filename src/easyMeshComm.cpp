@@ -111,9 +111,9 @@ String ICACHE_FLASH_ATTR easyMesh::buildMeshPackage( uint32_t destId, meshPackag
             root["subs"] = subs;
             break;
         }
-        case TIME_SYNC:
+/*        case TIME_SYNC:
             root["msg"] = jsonBuffer.parseObject( msg );
-            break;
+            break; */
         default:
             root["msg"] = msg;
     }

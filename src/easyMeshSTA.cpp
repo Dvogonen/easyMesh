@@ -84,6 +84,7 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
 
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::scanTimerCallback( void *arg ) {
+    os_timer_disarm(&staticThis->_scanTimer);
     staticThis->startStationScan();
     
     // this function can be totally elimiated!
@@ -108,7 +109,7 @@ void ICACHE_FLASH_ATTR easyMesh::stationScanCb(void *arg, STATUS status) {
     }
     staticThis->debugMsg( CONNECTION, "\tFound % d nodes with _meshPrefix = \"%s\"\n", staticThis->_meshAPs.size(), staticThis->_meshPrefix.c_str() );
     
-    staticThis->connectToBestAP();
+    staticThis->connectToBestAP(); // FIXME: maybe we can set some flag here and return to split stuff up?
 }
 
 //***********************************************************************
@@ -141,8 +142,8 @@ bool ICACHE_FLASH_ATTR easyMesh::connectToBestAP( void ) {
         //      debugMsg( GENERAL, "connectToBestAP(): no nodes left in list\n");
         // wait 5 seconds and rescan;
         debugMsg( CONNECTION, "connectToBestAP(): no nodes left in list, rescanning\n");
-        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
-        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
+//        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
+//        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
         return false;
     }
     

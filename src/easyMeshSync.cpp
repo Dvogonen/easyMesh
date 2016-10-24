@@ -18,6 +18,7 @@ uint32_t ICACHE_FLASH_ATTR easyMesh::getNodeTime( void ) {
     return ret;
 }
 
+/*
 //***********************************************************************
 String ICACHE_FLASH_ATTR timeSync::buildTimeStamp( void ) {
     staticThis->debugMsg( SYNC, "buildTimeStamp(): num=%d\n", num);
@@ -39,7 +40,8 @@ String ICACHE_FLASH_ATTR timeSync::buildTimeStamp( void ) {
     staticThis->debugMsg( SYNC, "buildTimeStamp(): timeStamp=%s\n", timeStampStr.c_str() );
     return timeStampStr;
 }
-
+*/
+/*
 //***********************************************************************
 bool ICACHE_FLASH_ATTR timeSync::processTimeStamp( String &str ) {
     staticThis->debugMsg( SYNC, "processTimeStamp(): str=%s\n", str.c_str());
@@ -67,7 +69,8 @@ bool ICACHE_FLASH_ATTR timeSync::processTimeStamp( String &str ) {
         return false;
     }
 }
-
+*/
+/*
 //***********************************************************************
 void ICACHE_FLASH_ATTR timeSync::calcAdjustment( bool odd ) {
     staticThis->debugMsg( SYNC, "calcAdjustment(): odd=%u\n", odd);
@@ -102,7 +105,7 @@ void ICACHE_FLASH_ATTR timeSync::calcAdjustment( bool odd ) {
     
     timeAdjuster += adjustment;
 }
-
+*/
 
 // easyMesh Syncing functions
 //***********************************************************************
@@ -150,14 +153,14 @@ void ICACHE_FLASH_ATTR easyMesh::handleNodeSync( meshConnectionType *conn, JsonO
         {
             debugMsg( SYNC, "handleNodeSync(): valid NODE_SYNC_REQUEST %d sending NODE_SYNC_REPLY\n", conn->chipId );
             String myOtherSubConnections = subConnectionJson( conn );
-            sendMessage( conn, _chipId, NODE_SYNC_REPLY, myOtherSubConnections );
+            sendMessage( conn, conn->chipId, NODE_SYNC_REPLY, myOtherSubConnections );
             break;
         }
         case NODE_SYNC_REPLY:
             debugMsg( SYNC, "handleNodeSync(): valid NODE_SYNC_REPLY from %d\n", conn->chipId );
             conn->nodeSyncRequest = 0;  //reset nodeSyncRequest Timer  ????
-            if ( conn->lastTimeSync == 0 )
-                startTimeSync( conn );
+//            if ( conn->lastTimeSync == 0 )
+//                startTimeSync( conn );
             break;
         default:
             debugMsg( ERROR, "handleNodeSync(): weird type? %d\n", type );
@@ -174,6 +177,7 @@ void ICACHE_FLASH_ATTR easyMesh::handleNodeSync( meshConnectionType *conn, JsonO
     conn->nodeSyncStatus = COMPLETE;  // mark this connection nodeSync'd
 }
 
+/*
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::startTimeSync( meshConnectionType *conn ) {
     debugMsg( SYNC, "startTimeSync(): with %d\n", conn->chipId );
@@ -188,10 +192,11 @@ void ICACHE_FLASH_ATTR easyMesh::startTimeSync( meshConnectionType *conn ) {
     //   debugMsg( GENERAL, "startTimeSync(): remoteSubCount=%d adopt=%d\n", remoteSubCount, conn->time.adopt);
     
     String timeStamp = conn->time.buildTimeStamp();
-    staticThis->sendMessage( conn, _chipId, TIME_SYNC, timeStamp );
+    staticThis->sendMessage( conn, conn->chipId, TIME_SYNC, timeStamp );
     
     conn->timeSyncStatus = IN_PROGRESS;
 }
+*/
 
 //***********************************************************************
 bool ICACHE_FLASH_ATTR easyMesh::adoptionCalc( meshConnectionType *conn ) {
@@ -207,6 +212,7 @@ bool ICACHE_FLASH_ATTR easyMesh::adoptionCalc( meshConnectionType *conn ) {
     return ret;
 }
 
+/*
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::handleTimeSync( meshConnectionType *conn, JsonObject& root ) {
     
@@ -219,7 +225,7 @@ void ICACHE_FLASH_ATTR easyMesh::handleTimeSync( meshConnectionType *conn, JsonO
 
     
     if ( conn->time.num < TIME_SYNC_CYCLES ) {
-        staticThis->sendMessage( conn, _chipId, TIME_SYNC, timeStamp );
+        staticThis->sendMessage( conn, conn->chipId, TIME_SYNC, timeStamp );
     }
     
     uint8_t odd = conn->time.num % 2;
@@ -241,7 +247,4 @@ void ICACHE_FLASH_ATTR easyMesh::handleTimeSync( meshConnectionType *conn, JsonO
         conn->timeSyncStatus = COMPLETE;
     }
 }
-
-
-
-
+*/

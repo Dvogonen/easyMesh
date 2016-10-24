@@ -5,10 +5,11 @@
 
 #define SCAN_INTERVAL       10000
 #define SYNC_INTERVAL       7000
-#define TIME_SYNC_CYCLES    10 // should (must?) be an even number
+//#define TIME_SYNC_CYCLES    10 // should (must?) be an even number
 
 //uint32_t getNodeTime( void );
 
+/*
 class timeSync {
 public:
     uint32_t        times[TIME_SYNC_CYCLES];
@@ -19,6 +20,5 @@ public:
     bool processTimeStamp( String &str);
     void calcAdjustment ( bool even );
 };
-
+*/
 #endif //   _MESH_SYNC_H_
-

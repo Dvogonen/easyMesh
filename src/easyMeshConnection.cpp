@@ -72,7 +72,7 @@ void ICACHE_FLASH_ATTR easyMesh::manageConnections( void ) {
                 connection++;
                 continue;
         }
-        
+/*        
         switch ( connection->timeSyncStatus ) {
             case NEEDED:
                 debugMsg( SYNC, "manageConnections(): starting timeSync with %d\n", connection->chipId);
@@ -83,7 +83,7 @@ void ICACHE_FLASH_ATTR easyMesh::manageConnections( void ) {
                 connection++;
                 continue;
         }
-
+*/
         if ( connection->newConnection == true ) {  // we should only get here once first nodeSync and timeSync are complete
             newConnectionCallback( adoptionCalc( connection ) );
             connection->newConnection = false;
@@ -261,7 +261,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshConnectedCb(void *arg) {
     if( newConn.esp_conn->proto.tcp->local_port != staticThis->_meshPort ) { // we are the station, start nodeSync
         staticThis->debugMsg( CONNECTION, "meshConnectedCb(): we are STA, start nodeSync\n");
         staticThis->startNodeSync( staticThis->_connections.end() - 1 );
-        newConn.timeSyncStatus = NEEDED;
+//        newConn.timeSyncStatus = NEEDED;
     }
     else
         staticThis->debugMsg( CONNECTION, "meshConnectedCb(): we are AP\n");
@@ -300,11 +300,11 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
         case NODE_SYNC_REPLY:
             staticThis->handleNodeSync( receiveConn, root );
             break;
-        
+/*        
         case TIME_SYNC:
             staticThis->handleTimeSync( receiveConn, root );
             break;
-    
+*/    
         case SINGLE:
             if ( (uint32_t)root["dest"] == staticThis->getChipId() ) {  // msg for us!
                 receivedCallback( (uint32_t)root["from"], msg);
@@ -327,6 +327,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
     
     // record that we've gotten a valid package
     receiveConn->lastRecieved = staticThis->getNodeTime();
+    staticThis->debugMsg( COMMUNICATION, "meshRecvCb(): lastRecieved=%d fromId=%d\n", receiveConn->lastRecieved, receiveConn->chipId );
     return;
 }
 
@@ -415,4 +416,3 @@ void ICACHE_FLASH_ATTR easyMesh::wifiEventCb(System_Event_t *event) {
             break;
     }
 }
-

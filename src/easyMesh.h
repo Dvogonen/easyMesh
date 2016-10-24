@@ -15,7 +15,7 @@ extern "C" {
 //#define MESH_PREFIX         "mesh"
 //#define MESH_PASSWORD       "bootyboo"
 //#define MESH_PORT           4444
-#define NODE_TIMEOUT        3000000  //uSecs
+#define NODE_TIMEOUT        4000000  //uSecs
 
 #define JSON_BUFSIZE        300 // initial size for the DynamicJsonBuffers.
 
@@ -41,10 +41,10 @@ enum syncStatusType {
 
 enum meshPackageType {
     DROP                    = 3,
-    TIME_SYNC               = 4,
+//    TIME_SYNC               = 4,
     NODE_SYNC_REQUEST       = 5,
     NODE_SYNC_REPLY         = 6,
-    CONTROL                 = 7,  //deprecated
+//    CONTROL                 = 7,  //deprecated
     BROADCAST               = 8,  //application data for everyone
     SINGLE                  = 9   //application data for a single node
 };
@@ -70,15 +70,15 @@ struct meshConnectionType {
     espconn             *esp_conn;
     uint32_t            chipId = 0;
     String              subConnections;
-    timeSync            time;
+//    timeSync            time;
     uint32_t            lastRecieved = 0;
     bool                newConnection = true;
 
     syncStatusType      nodeSyncStatus = NEEDED;
     uint32_t            nodeSyncRequest = 0;
 
-    syncStatusType      timeSyncStatus = NEEDED;
-    uint32_t            lastTimeSync = 0;
+//    syncStatusType      timeSyncStatus = NEEDED;
+//    uint32_t            lastTimeSync = 0;
 //    bool                needsNodeSync = true;
 //    bool                needsTimeSync = false;
 
@@ -134,8 +134,8 @@ protected:
     //must be accessable from callback
     void                startNodeSync( meshConnectionType *conn );
     void                handleNodeSync( meshConnectionType *conn, JsonObject& root );
-    void                startTimeSync( meshConnectionType *conn );
-    void                handleTimeSync( meshConnectionType *conn, JsonObject& root );
+//    void                startTimeSync( meshConnectionType *conn );
+//    void                handleTimeSync( meshConnectionType *conn, JsonObject& root );
     bool                adoptionCalc( meshConnectionType *conn );
     
     // in easyMeshConnection.cpp

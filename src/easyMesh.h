@@ -15,7 +15,7 @@ extern "C" {
 //#define MESH_PREFIX         "mesh"
 //#define MESH_PASSWORD       "bootyboo"
 //#define MESH_PORT           4444
-#define NODE_TIMEOUT        4000000  //uSecs
+#define NODE_TIMEOUT        10000000  //uSecs
 
 #define JSON_BUFSIZE        300 // initial size for the DynamicJsonBuffers.
 

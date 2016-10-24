@@ -84,6 +84,7 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
 
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::scanTimerCallback( void *arg ) {
+    os_timer_disarm(&staticThis->_scanTimer);
     staticThis->startStationScan();
     
     // this function can be totally elimiated!

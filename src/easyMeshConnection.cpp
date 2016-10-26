@@ -382,7 +382,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshDisconCb(void *arg) {
     else {
         staticThis->debugMsg( CONNECTION, "Station Connection! Find new node. local_port=%d\n", disConn->proto.tcp->local_port);
         // should start up automatically when station_status changes to IDLE
-        wifi_station_disconnect();
+        wifi_station_disconnect();//FIXME: try to reconnect if wifi is still up running ...
     }
     
     return;

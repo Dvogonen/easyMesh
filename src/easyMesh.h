@@ -79,7 +79,7 @@ struct meshConnectionType {
 
 //    syncStatusType      timeSyncStatus = NEEDED;
 //    uint32_t            lastTimeSync = 0;
-//    bool                needsNodeSync = true;
+    bool                needsNodeSync = true;
 //    bool                needsTimeSync = false;
 
     bool                sendReady = true;

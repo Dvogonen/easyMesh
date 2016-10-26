@@ -86,7 +86,7 @@ bool ICACHE_FLASH_ATTR easyMesh::sendPackage( meshConnectionType *connection, St
         }
     }
     else {
-        connection->sendQueue.push_back( package );
+        connection->sendQueue.push_back( package );//FIXME: maybe running out of memory messages piling up
     }
 }
 

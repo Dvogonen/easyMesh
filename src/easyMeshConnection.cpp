@@ -340,7 +340,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
     
     // record that we've gotten a valid package
     receiveConn->lastRecieved = staticThis->getNodeTime();
-    staticThis->debugMsg( COMMUNICATION, "meshRecvCb(): lastRecieved=%d fromId=%d\n", receiveConn->lastRecieved, receiveConn->chipId );
+    staticThis->debugMsg( COMMUNICATION, "meshRecvCb(): lastRecieved=%u fromId=%d\n", receiveConn->lastRecieved, receiveConn->chipId );
     return;
 }
 

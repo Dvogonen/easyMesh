@@ -78,7 +78,7 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
         return;
     }
     _scanStatus = SCANNING;
-    debugMsg( CONNECTION, "-->scan started @ %d<--\n", system_get_time());
+     debugMsg( CONNECTION, "-->scan started @ %u<--\n", staticThis->getNodeTime() );
     return;
 }
 
@@ -94,7 +94,7 @@ void ICACHE_FLASH_ATTR easyMesh::scanTimerCallback( void *arg ) {
 void ICACHE_FLASH_ATTR easyMesh::stationScanCb(void *arg, STATUS status) {
     char ssid[32];
     bss_info *bssInfo = (bss_info *)arg;
-    staticThis->debugMsg( CONNECTION, "stationScanCb():-- > scan finished @ % d < --\n", system_get_time());
+    staticThis->debugMsg( CONNECTION, "stationScanCb():-- > scan finished @ %u < --\n", staticThis->getNodeTime() );
     staticThis->_scanStatus = IDLE;
     
     staticThis->_meshAPs.clear();
@@ -142,8 +142,8 @@ bool ICACHE_FLASH_ATTR easyMesh::connectToBestAP( void ) {
         //      debugMsg( GENERAL, "connectToBestAP(): no nodes left in list\n");
         // wait 5 seconds and rescan;
         debugMsg( CONNECTION, "connectToBestAP(): no nodes left in list, rescanning\n");
-//        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
-//        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
+        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
+        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
         return false;
     }
     

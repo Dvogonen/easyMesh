@@ -13,7 +13,7 @@ uint32_t timeAdjuster = 0;
 uint32_t ICACHE_FLASH_ATTR easyMesh::getNodeTime( void ) {
     uint32_t ret = system_get_time() + timeAdjuster;
 
-    debugMsg( GENERAL, "getNodeTime(): time=%u\n", ret);
+    debugMsg( GENERAL, "getNodeTime(): time=%u\n", ret); //FIXME: will this crap out if systemtime + timeadjust > uint32 ?
     
     return ret;
 }

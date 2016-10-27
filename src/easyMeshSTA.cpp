@@ -63,6 +63,16 @@ void ICACHE_FLASH_ATTR easyMesh::manageStation( void ) {
         }
         previousStatus = stationStatus;
     }
+
+    if( _scanStatus == RESCAN && ( staticThis->getNodeTime() - _lastScanned ) > SCAN_INTERVAL ) {
+        _scanStatus = IDLE;
+        staticThis->startStationScan();
+    }
+
+    if( _scanStatus == FINISHED ) {
+        _scanStatus = IDLE;
+        staticThis->connectToBestAP();
+    }
 }
 
 //***********************************************************************
@@ -70,6 +80,7 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
     debugMsg( GENERAL, "startStationScan():\n");
 
     if ( _scanStatus != IDLE ) {
+        debugMsg( ERROR, "startStationScan() ... scan status not idle!?\n");
         return;
     }
     
@@ -82,6 +93,7 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
     return;
 }
 
+/*
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::scanTimerCallback( void *arg ) {
 //    os_timer_disarm(&staticThis->_scanTimer);
@@ -89,13 +101,14 @@ void ICACHE_FLASH_ATTR easyMesh::scanTimerCallback( void *arg ) {
     
     // this function can be totally elimiated!
 }
+*/
 
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::stationScanCb(void *arg, STATUS status) {
     char ssid[32];
     bss_info *bssInfo = (bss_info *)arg;
     staticThis->debugMsg( CONNECTION, "stationScanCb():-- > scan finished @ %u < --\n", staticThis->getNodeTime() );
-    staticThis->_scanStatus = IDLE;
+//    staticThis->_scanStatus = IDLE;
     
     staticThis->_meshAPs.clear();
     while (bssInfo != NULL) {
@@ -108,8 +121,8 @@ void ICACHE_FLASH_ATTR easyMesh::stationScanCb(void *arg, STATUS status) {
         bssInfo = STAILQ_NEXT(bssInfo, next);
     }
     staticThis->debugMsg( CONNECTION, "\tFound % d nodes with _meshPrefix = \"%s\"\n", staticThis->_meshAPs.size(), staticThis->_meshPrefix.c_str() );
-    
-    staticThis->connectToBestAP(); // FIXME: maybe we can set some flag here and return to split stuff up?
+    staticThis->_scanStatus = FINISHED;        
+//    staticThis->connectToBestAP(); // FIXME: maybe we can set some flag here and return to split stuff up?
 }
 
 //***********************************************************************
@@ -142,8 +155,10 @@ bool ICACHE_FLASH_ATTR easyMesh::connectToBestAP( void ) {
         //      debugMsg( GENERAL, "connectToBestAP(): no nodes left in list\n");
         // wait 5 seconds and rescan;
         debugMsg( CONNECTION, "connectToBestAP(): no nodes left in list, rescanning\n");
-        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
-        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
+//        os_timer_setfn( &_scanTimer, scanTimerCallback, NULL );
+//        os_timer_arm( &_scanTimer, SCAN_INTERVAL, 0 );
+        _lastScanned = staticThis->getNodeTime();
+        _scanStatus = RESCAN;
         return false;
     }
     

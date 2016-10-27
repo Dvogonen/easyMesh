@@ -61,7 +61,7 @@ void ICACHE_FLASH_ATTR easyMesh::manageConnections( void ) {
 //        totalTimeOut = connLastRecieved + nodeTimeOut;
         // The trick is to always calculate the time difference, and not compare the two time values.
 //        if ( totalTimeOut < nowNodeTime ) {
-        if ( nowNodeTime - connLastRecieved > nodeTimeOut ) {
+        if ( (nowNodeTime - connLastRecieved > nodeTimeOut) && (_scanStatus == IDLE || _scanStatus == RESCAN) ) {
             debugMsg( CONNECTION, "manageConnections(): dropping %d now= %u - last= %u ( %u ) > timeout= %u \n", connection->chipId, nowNodeTime, connLastRecieved, nowNodeTime - connLastRecieved, nodeTimeOut );
             connection = closeConnection( connection ); 
             continue;
@@ -382,11 +382,11 @@ void ICACHE_FLASH_ATTR easyMesh::meshDisconCb(void *arg) {
     else {
         staticThis->debugMsg( CONNECTION, "Station Connection! Find new node. local_port=%d\n", disConn->proto.tcp->local_port);
         // should start up automatically when station_status changes to IDLE
-        uint8_t stationStatus = wifi_station_get_connect_status();
-        if( stationStatus == STATION_GOT_IP )
-            staticThis->tcpConnect(); // if wifi still up ... try to reconnect to AP tcp ...
-        else
-            wifi_station_disconnect();
+//        uint8_t stationStatus = wifi_station_get_connect_status();
+//        if( stationStatus == STATION_GOT_IP )
+//            staticThis->tcpConnect(); // if wifi still up ... try to reconnect to AP tcp ...
+//        else
+            wifi_station_disconnect(); 
     }
     
     return;

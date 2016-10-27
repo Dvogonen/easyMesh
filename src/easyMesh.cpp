@@ -75,8 +75,8 @@ void ICACHE_FLASH_ATTR easyMesh::init( String prefix, String password, uint16_t 
 
 //***********************************************************************
 void ICACHE_FLASH_ATTR easyMesh::update( void ) {
-    manageStation();
     manageConnections();
+    manageStation();
     return;
 }
 

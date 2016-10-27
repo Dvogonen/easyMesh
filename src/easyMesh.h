@@ -29,7 +29,9 @@ enum nodeStatusType {
 
 enum scanStatusType {
     IDLE       = 0,
-    SCANNING   = 1
+    SCANNING   = 1,
+    FINISHED   = 2,
+    RESCAN     = 3
 };
 
 enum syncStatusType {
@@ -114,6 +116,7 @@ public:
     
     // should be prototected, but public for debugging
     scanStatusType                  _scanStatus = IDLE;
+    uint32_t                        _lastScanned = 0;
     nodeStatusType                  _nodeStatus = INITIALIZING;
     SimpleList<bss_info>            _meshAPs;
     SimpleList<meshConnectionType>  _connections;
@@ -179,7 +182,7 @@ protected:
     String      _meshPassword;
     uint16_t    _meshPort;
     
-    os_timer_t  _scanTimer;
+//    os_timer_t  _scanTimer;
     
     espconn     _meshServerConn;
     esp_tcp     _meshServerTcp;

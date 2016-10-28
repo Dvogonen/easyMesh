@@ -86,6 +86,7 @@ bool ICACHE_FLASH_ATTR easyMesh::sendPackage( meshConnectionType *connection, St
         }
     }
     else {
+        debugMsg( COMMUNICATION, "sendPackage(): espconn_send busy ... package queued for %d\n", connection->chipId );
         connection->sendQueue.push_back( package );//FIXME: maybe running out of memory messages piling up
     }
 }

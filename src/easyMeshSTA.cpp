@@ -83,13 +83,18 @@ void ICACHE_FLASH_ATTR easyMesh::startStationScan( void ) {
         debugMsg( ERROR, "startStationScan() scan status not idle!?\n");
         return;
     }
-    
-    if ( !wifi_station_scan(NULL, stationScanCb) ) {
+
+    struct scan_config scanConfig;
+    memset( &scanConfig, 0, sizeof(scanConfig) );
+    scanConfig.channel = 1; // limit scan to mesh channel to speed things up ...    
+
+    if ( !wifi_station_scan(&scanConfig, stationScanCb) ) {
         debugMsg( ERROR, "wifi_station_scan() failed!?\n");
         return;
     }
+    
     _scanStatus = SCANNING;
-    debugMsg( CONNECTION, "-->scan started @ %u<--\n", staticThis->getNodeTime() );
+    debugMsg( CONNECTION, "startStationScan():-->scan started @ %u<--\n", staticThis->getNodeTime() );
     return;
 }
 

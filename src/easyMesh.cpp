@@ -83,13 +83,13 @@ void ICACHE_FLASH_ATTR easyMesh::update( void ) {
 //***********************************************************************
 bool ICACHE_FLASH_ATTR easyMesh::sendSingle( uint32_t &destId, String &msg ){
     debugMsg( COMMUNICATION, "sendSingle(): dest=%d msg=%s\n", destId, msg.c_str());
-    sendMessage( destId, SINGLE, msg );
+    sendMessage( destId, SINGLE, msg, _chipId );
 }
 
 //***********************************************************************
 bool ICACHE_FLASH_ATTR easyMesh::sendBroadcast( String &msg ) {
     debugMsg( COMMUNICATION, "sendBroadcast(): msg=%s\n", msg.c_str());
-    broadcastMessage( _chipId, BROADCAST, msg );
+    broadcastMessage( _chipId, BROADCAST, msg, _chipId );
 }
 
 

@@ -17,14 +17,14 @@ extern "C" {
 
 #include "easyMesh.h"
 
-static void (*receivedCallback)( uint32_t from, String &msg);
+static void (*receivedCallback)( uint32_t from, String &msg, uint32_t src);
 static void (*newConnectionCallback)( bool adopt );
 
 extern easyMesh* staticThis;
 
 // connection managment functions
 //***********************************************************************
-void ICACHE_FLASH_ATTR easyMesh::setReceiveCallback( void(*onReceive)(uint32_t from, String &msg) ) {
+void ICACHE_FLASH_ATTR easyMesh::setReceiveCallback( void(*onReceive)(uint32_t from, String &msg, uint32_t src) ) {
     debugMsg( GENERAL, "setReceiveCallback():\n");
     receivedCallback = onReceive;
 }
@@ -320,7 +320,7 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
 */    
         case SINGLE:
             if ( (uint32_t)root["dest"] == staticThis->getChipId() ) {  // msg for us!
-                receivedCallback( (uint32_t)root["from"], msg);
+                receivedCallback( (uint32_t)root["from"], msg, (uint32_t)root["src"]);
             } else {                                                    // pass it along
                 //staticThis->sendMessage( (uint32_t)root["dest"], (uint32_t)root["from"], SINGLE, msg );  //this is ineffiecnt
                 String tempStr( data );
@@ -329,8 +329,8 @@ void ICACHE_FLASH_ATTR easyMesh::meshRecvCb(void *arg, char *data, unsigned shor
             break;
         
         case BROADCAST:
-            staticThis->broadcastMessage( (uint32_t)root["from"], BROADCAST, msg, receiveConn);
-            receivedCallback( (uint32_t)root["from"], msg);
+            staticThis->broadcastMessage( (uint32_t)root["from"], BROADCAST, msg, (uint32_t)root["src"], receiveConn);
+            receivedCallback( (uint32_t)root["from"], msg, (uint32_t)root["src"]);
             break;
      
         default:

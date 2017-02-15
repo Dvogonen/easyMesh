@@ -16,23 +16,23 @@ extern easyMesh* staticThis;
 
 // communications functions
 //***********************************************************************
-bool ICACHE_FLASH_ATTR easyMesh::sendMessage( meshConnectionType *conn, uint32_t destId, meshPackageType type, String &msg ) {
-    debugMsg( COMMUNICATION, "sendMessage(conn): conn-chipId=%d destId=%d type=%d msg=%s\n",
-                   conn->chipId, destId, (uint8_t)type, msg.c_str());
+bool ICACHE_FLASH_ATTR easyMesh::sendMessage( meshConnectionType *conn, uint32_t destId, meshPackageType type, String &msg, uint32_t srcId) {
+    debugMsg( COMMUNICATION, "sendMessage(conn): conn-chipId=%d destId=%d srcId=%d type=%d msg=%s\n",
+                   conn->chipId, destId, srcId, (uint8_t)type, msg.c_str());
     
-    String package = buildMeshPackage( destId, type, msg );
+    String package = buildMeshPackage( destId, type, msg, srcId );
     
     return sendPackage( conn, package );
 }
 
 //***********************************************************************
-bool ICACHE_FLASH_ATTR easyMesh::sendMessage( uint32_t destId, meshPackageType type, String &msg ) {
-    debugMsg( COMMUNICATION, "In sendMessage(destId): destId=%d type=%d, msg=%s\n",
-                   destId, type, msg.c_str());
+bool ICACHE_FLASH_ATTR easyMesh::sendMessage( uint32_t destId, meshPackageType type, String &msg, uint32_t srcId ) {
+    debugMsg( COMMUNICATION, "In sendMessage(destId): destId=%d srcId=%d type=%d, msg=%s\n",
+                   destId, srcId, type, msg.c_str());
  
     meshConnectionType *conn = findConnection( destId );
     if ( conn != NULL ) {
-        return sendMessage( conn, destId, type, msg );
+        return sendMessage( conn, destId, type, msg, srcId );
     }
     else {
         debugMsg( ERROR, "In sendMessage(destId): findConnection( destId ) failed\n");
@@ -45,21 +45,22 @@ bool ICACHE_FLASH_ATTR easyMesh::sendMessage( uint32_t destId, meshPackageType t
 bool ICACHE_FLASH_ATTR easyMesh::broadcastMessage(uint32_t from,
                                 meshPackageType type,
                                 String &msg,
+								uint32_t src,
                                 meshConnectionType *exclude ) {
     
     // send a message to every node on the mesh
     
     if ( exclude != NULL )
-        debugMsg( COMMUNICATION, "broadcastMessage(): from=%d type=%d, msg=%s exclude=%d\n",
-                   from, type, msg.c_str(), exclude->chipId);
+        debugMsg( COMMUNICATION, "broadcastMessage(): from=%d src=%d type=%d, msg=%s exclude=%d\n",
+                   from, src, type, msg.c_str(), exclude->chipId);
     else
-        debugMsg( COMMUNICATION, "broadcastMessage(): from=%d type=%d, msg=%s exclude=NULL\n",
-                   from, type, msg.c_str());
+        debugMsg( COMMUNICATION, "broadcastMessage(): from=%d src=%d type=%d, msg=%s exclude=NULL\n",
+                   from, src, type, msg.c_str());
     
     SimpleList<meshConnectionType>::iterator connection = _connections.begin();
     while ( connection != _connections.end() ) {
         if ( connection != exclude ) {
-            sendMessage( connection, connection->chipId, type, msg );
+            sendMessage( connection, connection->chipId, type, msg, src );
         }
         connection++;
     }
@@ -92,7 +93,7 @@ bool ICACHE_FLASH_ATTR easyMesh::sendPackage( meshConnectionType *connection, St
 }
 
 //***********************************************************************
-String ICACHE_FLASH_ATTR easyMesh::buildMeshPackage( uint32_t destId, meshPackageType type, String &msg ) {
+String ICACHE_FLASH_ATTR easyMesh::buildMeshPackage( uint32_t destId, meshPackageType type, String &msg, uint32_t srcId ) {
     debugMsg( GENERAL, "In buildMeshPackage(): msg=%s\n", msg.c_str() );
     
     DynamicJsonBuffer jsonBuffer( JSON_BUFSIZE );
@@ -100,6 +101,7 @@ String ICACHE_FLASH_ATTR easyMesh::buildMeshPackage( uint32_t destId, meshPackag
     root["dest"] = destId;
     root["from"] = _chipId;
     root["type"] = (uint8_t)type;
+	root["src"] = srcId;
     
     switch( type ) {
         case NODE_SYNC_REQUEST:

@@ -231,7 +231,7 @@ void ICACHE_FLASH_ATTR easyMesh::tcpConnect( void ) {
         
         sint8  errCode = espconn_connect(&_stationConn);
         if ( errCode != 0 ) {
-            debugMsg( ERROR, "tcpConnect(): err espconn_connect() falied=%d\n", errCode );
+            debugMsg( ERROR, "tcpConnect(): err espconn_connect() failed=%d\n", errCode );
         }
     }
     else {

@@ -26,53 +26,55 @@ easyMesh  mesh;
 uint32_t sendMessageTime = 0;
 
 void setup() {
-  Serial.begin(115200);
-    
-  pinMode( LED, OUTPUT );
+	Serial.begin(115200);
 
-//mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-//mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
-  mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION );  // set before init() so that you can see startup messages
+	pinMode(LED, OUTPUT);
 
-  mesh.init( MESH_PREFIX, MESH_PASSWORD, MESH_PORT );
-  mesh.setReceiveCallback( &receivedCallback );
-  mesh.setNewConnectionCallback( &newConnectionCallback );
+	//mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
+	mesh.setDebugMsgTypes(ERROR | STARTUP);  // set before init() so that you can see startup messages
 
-  randomSeed( analogRead( A0 ) );  
+	mesh.init(MESH_PREFIX, MESH_PASSWORD, MESH_PORT);
+	mesh.setReceiveCallback(&receivedCallback);
+	mesh.setNewConnectionCallback(&newConnectionCallback);
+
+	randomSeed(analogRead(A0));
 }
 
 void loop() {
-  mesh.update();
+	mesh.update();
 
-  // run the blinky
-  bool  onFlag = false;
-  uint32_t cycleTime = mesh.getNodeTime() % BLINK_PERIOD;
-  for ( uint8_t i = 0; i < ( mesh.connectionCount() + 1); i++ ) {
-    uint32_t onTime = BLINK_DURATION * i * 2;    
+	// run the blinky
+	bool  onFlag = false;
+	uint32_t cycleTime = mesh.getNodeTime() % BLINK_PERIOD;
+	for (uint8_t i = 0; i < (mesh.connectionCount() + 1); i++) {
+		uint32_t onTime = BLINK_DURATION * i * 2;
 
-    if ( cycleTime > onTime && cycleTime < onTime + BLINK_DURATION )
-      onFlag = true;
-  }
-  digitalWrite( LED, onFlag );
+		if (cycleTime > onTime && cycleTime < onTime + BLINK_DURATION)
+			onFlag = true;
+	}
+	digitalWrite(LED, onFlag);
 
-  // get next random time for send message
-  if ( sendMessageTime == 0 ) {
-    sendMessageTime = mesh.getNodeTime() + random( 1000000, 5000000 );
-  }
+	// get next random time for send message
+	if (sendMessageTime == 0) {
+		sendMessageTime = mesh.getNodeTime() + random(1000000, 5000000);
+	}
 
-  // if the time is ripe, send everyone a message!
-  if ( sendMessageTime != 0 && sendMessageTime < mesh.getNodeTime() ){
-    String msg = "Hello from node ";
-    msg += mesh.getChipId();
-    mesh.sendBroadcast( msg );
-    sendMessageTime = 0;
-  }
+	// if the time is ripe, send everyone a message!
+	if (sendMessageTime != 0 && sendMessageTime < mesh.getNodeTime()) {
+		String msg = "Hello from node ";
+		msg += mesh.getChipId();
+		mesh.sendBroadcast(msg);
+		sendMessageTime = 0;
+	}
 }
 
-void receivedCallback( uint32_t from, String &msg ) {
-  Serial.printf("startHere: Received from %d msg=%s\n", from, msg.c_str());
+void receivedCallback(uint32_t from, String &msg, uint32_t source) {
+	if (from == source)
+		Serial.printf("startHere: Received from %d msg=%s\n", from, msg.c_str());
+	else
+		Serial.printf("startHere: Received from %d (through %d) msg=%s\n", source, from, msg.c_str());
 }
 
-void newConnectionCallback( bool adopt ) {
-  Serial.printf("startHere: New Connection, adopt=%d\n", adopt);
+void newConnectionCallback(bool adopt) {
+	Serial.printf("startHere: New Connection, adopt=%d\n", adopt);
 }

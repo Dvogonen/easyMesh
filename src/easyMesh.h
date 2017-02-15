@@ -107,7 +107,7 @@ public:
     bool                sendBroadcast( String &msg );
     
     // in easyMeshConnection.cpp
-    void                setReceiveCallback( void(*onReceive)(uint32_t from, String &msg) );
+    void                setReceiveCallback( void(*onReceive)(uint32_t from, String &msg, uint32_t src) );
     void                setNewConnectionCallback( void(*onNewConnection)(bool adopt) );
     uint16_t            connectionCount( meshConnectionType *exclude = NULL );
 
@@ -125,12 +125,12 @@ protected:
     
     // in easyMeshComm.cpp
     //must be accessable from callback
-    bool                sendMessage( meshConnectionType *conn, uint32_t destId, meshPackageType type, String &msg );
-    bool                sendMessage( uint32_t destId, meshPackageType type, String &msg );
-    bool                broadcastMessage( uint32_t fromId, meshPackageType type, String &msg, meshConnectionType *exclude = NULL );
+    bool                sendMessage( meshConnectionType *conn, uint32_t destId, meshPackageType type, String &msg, uint32_t srcId);
+    bool                sendMessage( uint32_t destId, meshPackageType type, String &msg, uint32_t srcId );
+    bool                broadcastMessage( uint32_t fromId, meshPackageType type, String &msg, uint32_t srcId, meshConnectionType *exclude = NULL );
     
     bool sendPackage( meshConnectionType *connection, String &package );
-    String buildMeshPackage(uint32_t destId, meshPackageType type, String &msg);
+    String buildMeshPackage(uint32_t destId, meshPackageType type, String &msg, uint32_t srcId);
 
     
     // in easyMeshSync.cpp
